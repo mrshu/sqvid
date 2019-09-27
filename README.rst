@@ -1,6 +1,23 @@
 SQVID
 =====
 
+.. image:: https://img.shields.io/pypi/v/sqvid.svg
+    :target: https://pypi.python.org/pypi/sqvid
+    :alt: PyPI Status
+
+.. image:: https://img.shields.io/travis/mrshu/sqvid.svg
+    :target: https://travis-ci.org/mrshu/sqvid
+    :alt: Build Status
+
+.. image:: https://coveralls.io/repos/github/mrshu/sqvid/badge.svg?branch=master
+    :target: https://coveralls.io/github/mrshu/sqvid?branch=master
+    :alt: Code coverage Status
+
+.. image:: https://img.shields.io/pypi/l/sqvid.svg
+   :target: ./LICENSE
+   :alt: License Status
+
+
 SQVID, the Simple sQl Validator of varIous Datasources is a framework for
 validating any type of data source that can be queried via SQL with the
 help of `SQLAlchemy`_. It aims to be a simplified and extensible
@@ -64,9 +81,9 @@ to, we can put together the following SQVID validation config:
    validator = 'in_range'
    args = {min = 1, max = 256}
 
-*Note that the the validation config file is fromated using `TOML`_ -- you
-can find a very nice tutorial on this formatting language at
-`LearnXinYMinutes`_.*
+*Note that the the validation config file is fromated using* `TOML`_ *-- you
+can find a very nice tutorial on this formatting language at*
+`LearnXinYMinutes`_.
 
 The ``[general]`` section specifies SQLAlchemy connection string in
 ``sqla`` and the name of the DB that is going to have its data validated in
