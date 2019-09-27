@@ -6,13 +6,17 @@ from nicetable.nicetable import NiceTable
 import sys
 import click
 
+QUERY_VERBOSE_STR = "\nRUNNING QUERY:\n===========\n{}\n==========="
+
 
 @click.command()
 @click.option('--config',
               type=click.Path(exists=True),
               required=True,
               help='Path to a .toml config file.')
-def run(config):
+@click.option('--verbose/--no-verbose', default=False,
+              help='Turn on verbose output of SQL queries.')
+def run(config, verbose):
     """Validator of data that is queriable via SQL."""
     cfg = load(config)
 
@@ -30,8 +34,12 @@ def run(config):
                 args = val.get('args')
 
                 validator_fn = getattr(validator_module, validator_name)
-                r, k = execute_validation(engine, table, column, validator_fn,
-                                          args)
+                r, k, q = execute_validation(engine, table, column,
+                                             validator_fn, args)
+
+                if verbose:
+                    print(QUERY_VERBOSE_STR.format(q))
+
                 if len(r) == 0:
                     print("PASSED: Validation on [{}] {}.{} of {}{}".format(
                         db_name,

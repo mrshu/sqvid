@@ -11,7 +11,8 @@ DIRNAME = os.path.dirname(os.path.abspath(__file__))
 @pytest.fixture(scope="module")
 def engine():
     db_path = DIRNAME + '/test_sqvid_db.sqlite'
-    os.remove(db_path)
+    if os.path.exists(db_path):
+        os.remove(db_path)
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
     # Import the DB from https://github.com/AndrejPHP/w3schools-database
@@ -39,26 +40,26 @@ def test_raw_validation(engine):
 
 
 def test_execute_validation(engine):
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.in_range,
-                                             args={
-                                                 'min': 1,
-                                                 'max': 30
-                                             })
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.in_range,
+                                                args={
+                                                    'min': 1,
+                                                    'max': 30
+                                                })
     assert len(r) == 0
 
 
 def test_execute_validation_with_fail(engine):
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.in_range,
-                                             args={
-                                                 'min': 3,
-                                                 'max': 30
-                                             })
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.in_range,
+                                                args={
+                                                    'min': 3,
+                                                    'max': 30
+                                                })
     assert len(r) == 2
 
     o = [(1, 'Exotic Liquid', 'Charlotte Cooper',
@@ -70,18 +71,18 @@ def test_execute_validation_with_fail(engine):
 
 
 def test_execute_unique_validation(engine):
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.unique)
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.unique)
     assert len(r) == 0
 
 
 def test_execute_unique_validation_with_fail(engine):
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'orders',
-                                             'CustomerID',
-                                             sqvid.validators.unique)
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'orders',
+                                                'CustomerID',
+                                                sqvid.validators.unique)
     assert len(r) == 52
 
 
@@ -90,11 +91,11 @@ def test_execute_custom_sql_query_validation(engine):
         'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }}',
         'val': 50
     }
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.custom_sql,
-                                             args=args)
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.custom_sql,
+                                                args=args)
     assert len(r) == 0
 
 
@@ -103,11 +104,11 @@ def test_execute_custom_sql_query_validation_fail(engine):
         'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }}',
         'val': 25
     }
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.custom_sql,
-                                             args=args)
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.custom_sql,
+                                                args=args)
     assert len(r) == 4
 
 
@@ -116,11 +117,11 @@ def test_execute_custom_sql_file_validation_fail(engine):
         'query_file': './tests/queries/tables_equal_rows.sql',
         'other_table': 'suppliers_missing_first_3'
     }
-    r, _ = sqvid.executor.execute_validation(engine,
-                                             'suppliers',
-                                             'SupplierID',
-                                             sqvid.validators.custom_sql,
-                                             args=args)
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.custom_sql,
+                                                args=args)
     assert len(r) == 3
 
 
@@ -136,6 +137,11 @@ def test_e2e_run():
                                ['--config', c])
         assert result.exit_code == 0
 
+        # Same thing with verbose
+        result = runner.invoke(sqvid.console.run,
+                               ['--config', c, '--verbose'])
+        assert result.exit_code == 0
+
 
 def test_e2e_run_with_fail():
     runner = CliRunner()
@@ -147,4 +153,9 @@ def test_e2e_run_with_fail():
     for c in config_files:
         result = runner.invoke(sqvid.console.run,
                                ['--config', c])
+        assert result.exit_code == 1
+
+        # Same thing with verbose
+        result = runner.invoke(sqvid.console.run,
+                               ['--config', c, '--verbose'])
         assert result.exit_code == 1
