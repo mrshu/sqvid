@@ -1,0 +1,17 @@
+[general]
+sqla = "sqlite:///tests/test_sqvid_db.sqlite"
+db_name = 'test_sqvid_db'
+
+[[test_sqvid_db.suppliers.SupplierID]]
+validator = 'unique'
+
+[[test_sqvid_db.suppliers.SupplierID]]
+validator = 'in_range'
+args = {min = 1, max = 256}
+
+[[test_sqvid_db.suppliers.SupplierID]]
+validator = 'custom_sql'
+
+  [test_sqvid_db.suppliers.SupplierID.args]
+  query_file = './tests/queries/tables_equal_rows.sql'
+  other_table = 'suppliers_copy'
