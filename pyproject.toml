@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "sqvid"
+version = "0.1.0"
+description = "SQVID: Simple sQl Validator of varIous Datasources"
+authors = ["Marek mr.Shu Suppa <mr@shu.io>"]
+license = "Apache-2.0"
+repository = "https://github.com/mrshu/sqvid"
+readme = "README.rst"
+keywords = ['SQL', 'data', 'validation', 'test']
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers"
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sqlalchemy = "^1.3"
+envtoml = "^0.1.1"
+nicetable = "^0.7.0"
+click = "^7.0"
+jinjasql = "^0.1.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+pytest-cov = "^2.7"
+
+[tool.poetry.scripts]
+sqvid = 'sqvid:console.run'
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
