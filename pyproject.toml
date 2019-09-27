@@ -2,7 +2,7 @@
 name = "sqvid"
 version = "0.1.0"
 description = "SQVID: Simple sQl Validator of varIous Datasources"
-authors = ["Marek mr.Shu Suppa <mr@shu.io>"]
+authors = ["Marek Suppa <mr@shu.io>"]
 license = "Apache-2.0"
 repository = "https://github.com/mrshu/sqvid"
 readme = "README.rst"
