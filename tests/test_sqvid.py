@@ -78,6 +78,74 @@ def test_execute_unique_validation(engine):
     assert len(r) == 0
 
 
+def test_execute_accepted_values_validation(engine):
+    accepted_values = [
+        'USA',
+        'UK',
+        'Spain',
+        'Japan',
+        'Germany',
+        'Australia',
+        'Sweden',
+        'Finland',
+        'Italy',
+        'Brazil',
+        'Singapore',
+        'Norway',
+        'Canada',
+        'France',
+        'Denmark',
+        'Netherlands'
+    ]
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'Country',
+                                                sqvid.validators.accepted_values, # noqa
+                                                args={
+                                                    'vals': accepted_values
+                                                })
+
+    assert len(r) == 0
+
+
+def test_execute_accepted_values_validation_fail(engine):
+    accepted_values = [
+        'USA',
+        'UK',
+        'Spain',
+        'Japan',
+        'Germany',
+        'Australia',
+        'Sweden',
+        'Finland',
+        'Italy',
+        'Brazil',
+        'Singapore',
+        'Norway',
+        'Canada',
+        'France',
+        'Denmark',
+        'Netherlands'
+    ]
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers_missing_first_3_append_last_3', # noqa
+                                                'Country',
+                                                sqvid.validators.accepted_values, # noqa
+                                                args={
+                                                    'vals': accepted_values
+                                                })
+
+    assert len(r) == 3
+    assert r == [
+        (30, 'Escargots Nouveaux', 'Marie Delamare', '22, rue H. Voiron',
+         'Montceau', '71300', 'Malawi', '85.57.00.07'),
+        (31, 'Gai pâturage', 'Eliane Noz', 'Bat. B 3, rue des Alpes',
+         'Annecy', '74000', 'Argentina', '38.76.98.06'),
+        (32, "Forêts d'érables", 'Chantal Goulet', '148 rue Chasseur',
+         'Ste-Hyacinthe', 'J2S 7S8', 'Peru', '(514) 555-2955')
+    ]
+
+
 def test_execute_unique_validation_with_fail(engine):
     r, _, _ = sqvid.executor.execute_validation(engine,
                                                 'orders',
@@ -123,6 +191,19 @@ def test_execute_custom_sql_file_validation_fail(engine):
                                                 sqvid.validators.custom_sql,
                                                 args=args)
     assert len(r) == 3
+
+
+def test_execute_custom_sql_file_validation_fail_again(engine):
+    args = {
+        'query_file': './tests/queries/tables_equal_rows.sql',
+        'other_table': 'suppliers_missing_first_3_append_last_3'
+    }
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.custom_sql,
+                                                args=args)
+    assert len(r) == 6
 
 
 def test_e2e_run():

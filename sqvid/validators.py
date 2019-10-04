@@ -17,6 +17,19 @@ def in_range(table, column, args=None):
                                            column > args['max']))
 
 
+def accepted_values(table, column, args=None):
+    """
+    Check that a column contains only specified values.
+
+    Args:
+        - vals: a list of values
+
+    """
+    assert 'vals' in args
+
+    return db.select([table]).where(column.notin_(args['vals']))
+
+
 def unique(table, column, args=None):
     """
     Check whether values in a column are unique.
