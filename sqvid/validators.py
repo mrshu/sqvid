@@ -21,8 +21,9 @@ def unique(table, column, args=None):
     """
     Check whether values in a column are unique.
     """
-    return db.select([table]).group_by(column)\
-             .having(db.func.count(column) > 1)
+    return table.select(column) \
+        .group_by(column) \
+        .having(db.func.count(column) > 1)
 
 
 def custom_sql(table, column, args=None):
