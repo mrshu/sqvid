@@ -178,7 +178,7 @@ They can also be ran with `coverage <https://nose.readthedocs.io/en/latest/plugi
 
 .. code:: bash
 
-    poetry run pytest --cov=envtoml
+    poetry run pytest --cov=sqvid
 
 
 License

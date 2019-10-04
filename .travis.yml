@@ -12,6 +12,6 @@ before_install:
 install:
   - poetry install
 script:
-  - poetry run pytest --cov=envtoml
+  - poetry run pytest --cov=sqvid
 after_success:
   - coveralls
