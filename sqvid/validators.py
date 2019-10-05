@@ -30,6 +30,13 @@ def accepted_values(table, column, args=None):
     return db.select([table]).where(column.notin_(args['vals']))
 
 
+def not_null(table, column, args=None):
+    """
+    Check that a column contains only non-NULL values.
+    """
+    return db.select([table]).where(column.is_(None))
+
+
 def unique(table, column, args=None):
     """
     Check whether values in a column are unique.

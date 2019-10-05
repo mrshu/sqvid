@@ -98,6 +98,23 @@ def test_execute_in_range_validation_custom_column_with_fail(engine):
     assert len(r) == 23
 
 
+def test_execute_not_null_validation(engine):
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'products',
+                                                'ProductID',
+                                                sqvid.validators.not_null)
+    assert len(r) == 0
+
+
+def test_execute_not_null_validation_with_fail(engine):
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'products',
+                                                'Price',
+                                                sqvid.validators.not_null)
+    assert len(r) == 1
+    assert r == [(78, 'Chocolade', 22, 3, '100 pkgs.', None)]
+
+
 def test_execute_unique_validation(engine):
     r, _, _ = sqvid.executor.execute_validation(engine,
                                                 'suppliers',
