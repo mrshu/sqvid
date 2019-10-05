@@ -1013,7 +1013,8 @@ INSERT INTO `products` (`ProductID`, `ProductName`, `SupplierID`, `CategoryID`, 
 (74, "Longlife Tofu", 4, 7, "5 kg pkg.", 10),
 (75, "Rhönbräu Klosterbier", 12, 1, "24 - 0.5 l bottles", 7.75),
 (76, "Lakkalikööri", 23, 1, "500 ml", 18),
-(77, "Original Frankfurter grüne Soße", 12, 2, "12 boxes", 13);
+(77, "Original Frankfurter grüne Soße", 12, 2, "12 boxes", 13),
+(78, "Chocolade", 22, 3, "100 pkgs.", NULL);
 
 -- --------------------------------------------------------
 

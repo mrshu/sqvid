@@ -27,7 +27,7 @@ def test_version():
     assert __version__ == '0.1.0'
 
 
-def test_raw_validation(engine):
+def test_raw_in_range_validation(engine):
     conn = engine.connect()
     t = sqvid.executor.prepare_table(engine, 'suppliers')
     s = sqvid.validators.in_range(t, t.columns['SupplierID'],
@@ -39,7 +39,7 @@ def test_raw_validation(engine):
     assert len(ll) == 0
 
 
-def test_execute_validation(engine):
+def test_execute_in_range_validation(engine):
     r, _, _ = sqvid.executor.execute_validation(engine,
                                                 'suppliers',
                                                 'SupplierID',
@@ -51,7 +51,7 @@ def test_execute_validation(engine):
     assert len(r) == 0
 
 
-def test_execute_validation_with_fail(engine):
+def test_execute_in_range_validation_with_fail(engine):
     r, _, _ = sqvid.executor.execute_validation(engine,
                                                 'suppliers',
                                                 'SupplierID',
@@ -68,6 +68,34 @@ def test_execute_validation_with_fail(engine):
           'P.O. Box 78934', 'New Orleans', '70117', 'USA', '(100) 555-4822')]
 
     assert r == o
+
+
+def test_execute_in_range_validation_custom_column(engine):
+    c = 'SupplierID - 5'
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.in_range,
+                                                args={
+                                                    'min': 1,
+                                                    'max': 30
+                                                },
+                                                custom_column=c)
+    assert len(r) == 5
+
+
+def test_execute_in_range_validation_custom_column_with_fail(engine):
+    c = 'SupplierID * 5'
+    r, _, _ = sqvid.executor.execute_validation(engine,
+                                                'suppliers',
+                                                'SupplierID',
+                                                sqvid.validators.in_range,
+                                                args={
+                                                    'min': 1,
+                                                    'max': 30
+                                                },
+                                                custom_column=c)
+    assert len(r) == 23
 
 
 def test_execute_unique_validation(engine):

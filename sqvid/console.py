@@ -32,10 +32,16 @@ def run(config, verbose):
             for val in cfg[db_name][table][column]:
                 validator_name = val['validator']
                 args = val.get('args')
+                custom_column = val.get('custom_column')
 
                 validator_fn = getattr(validator_module, validator_name)
                 r, k, q = execute_validation(engine, table, column,
-                                             validator_fn, args)
+                                             validator_fn, args,
+                                             custom_column=custom_column)
+
+                if custom_column:
+                    column = "{} (customized as '{}')".format(column,
+                                                              custom_column)
 
                 if verbose:
                     print(QUERY_VERBOSE_STR.format(q))

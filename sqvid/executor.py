@@ -6,10 +6,18 @@ def prepare_table(engine, table_name):
     return db.Table(table_name, metadata, autoload=True, autoload_with=engine)
 
 
-def execute_validation(engine, table, column, validator, args=None):
+def execute_validation(engine, table, column, validator, args=None,
+                       custom_column=None):
     conn = engine.connect()
     t = prepare_table(engine, table)
-    s = validator(t, t.columns[column], args=args)
+    col = t.columns[column]
+
+    # If a custom column has been specified, use it in place of the column from
+    # the table
+    if custom_column:
+        col = db.sql.literal_column(custom_column)
+
+    s = validator(t, col, args=args)
     ex = conn.execute(s)
 
     if type(s) == str:
