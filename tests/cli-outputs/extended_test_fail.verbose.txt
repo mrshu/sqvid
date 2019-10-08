@@ -1,0 +1,64 @@
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID" 
+FROM suppliers GROUP BY suppliers."SupplierID" 
+HAVING count(suppliers."SupplierID") > 1
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE suppliers."SupplierID" < 1 OR suppliers."SupplierID" > 256
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 1, 'max': 256})
+
+RUNNING QUERY:
+===========
+-- Do a set difference from both sides
+SELECT * FROM
+(
+    SELECT * FROM suppliers
+    EXCEPT
+    SELECT * FROM suppliers_missing_first_3
+)
+
+UNION ALL
+
+SELECT * FROM
+(
+    SELECT * FROM suppliers_missing_first_3
+    EXCEPT
+    SELECT * FROM suppliers
+)
+===========
+FAILED: Validation on [test_sqvid_db] suppliers.SupplierID of custom_sql({'query_file': './tests/queries/tables_equal_rows.sql', 'other_table': 'suppliers_missing_first_3', 'table': 'suppliers', 'column': 'SupplierID'})
+Offending 3 rows:
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+|  SupplierID  |  SupplierName                |  ContactName       |  Address         |  City         |  PostalCode  |  Country  |  Phone           |
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+|           1  |  Exotic Liquid               |  Charlotte Cooper  |  49 Gilbert St.  |  Londona      |  EC1 4SD     |  UK       |  (171) 555-2222  |
+|           2  |  New Orleans Cajun Delights  |  Shelley Burke     |  P.O. Box 78934  |  New Orleans  |  70117       |  USA      |  (100) 555-4822  |
+|           3  |  Grandma Kelly's Homestead   |  Regina Murphy     |  707 Oxford Rd.  |  Ann Arbor    |  48104       |  USA      |  (313) 555-5735  |
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE SupplierID * 10 < 1 OR SupplierID * 10 > 256
+===========
+FAILED: Validation on [test_sqvid_db] suppliers.SupplierID (customized as 'SupplierID * 10') of in_range({'min': 1, 'max': 256})
+Offending 4 rows:
++--------------+------------------------+--------------------+---------------------------+-----------------+--------------+-----------+------------------+
+|  SupplierID  |  SupplierName          |  ContactName       |  Address                  |  City           |  PostalCode  |  Country  |  Phone           |
++--------------+------------------------+--------------------+---------------------------+-----------------+--------------+-----------+------------------+
+|          26  |  Pasta Buttini s.r.l.  |  Giovanni Giudici  |  Via dei Gelsomini, 153   |  Salerno        |  84100       |  Italy    |  (089) 6547665   |
+|          27  |  Escargots Nouveaux    |  Marie Delamare    |  22, rue H. Voiron        |  Montceau       |  71300       |  France   |  85.57.00.07     |
+|          28  |  Gai pâturage          |  Eliane Noz        |  Bat. B 3, rue des Alpes  |  Annecy         |  74000       |  France   |  38.76.98.06     |
+|          29  |  Forêts d'érables      |  Chantal Goulet    |  148 rue Chasseur         |  Ste-Hyacinthe  |  J2S 7S8     |  Canada   |  (514) 555-2955  |
++--------------+------------------------+--------------------+---------------------------+-----------------+--------------+-----------+------------------+
+

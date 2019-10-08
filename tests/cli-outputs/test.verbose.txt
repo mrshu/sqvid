@@ -1,0 +1,16 @@
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID" 
+FROM suppliers GROUP BY suppliers."SupplierID" 
+HAVING count(suppliers."SupplierID") > 1
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE suppliers."SupplierID" < 1 OR suppliers."SupplierID" > 256
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 1, 'max': 256})

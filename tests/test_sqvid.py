@@ -251,6 +251,16 @@ def test_execute_custom_sql_file_validation_fail_again(engine):
     assert len(r) == 6
 
 
+def convert_cfg_to_output_path(path, is_verbose=False):
+    if is_verbose:
+        path = path.replace('toml', 'verbose.txt')
+    else:
+        path = path.replace('toml', 'txt')
+
+    path = path.replace('tests/configs', 'tests/cli-outputs')
+    return path
+
+
 def test_e2e_run():
     runner = CliRunner()
     config_files = [
@@ -263,10 +273,16 @@ def test_e2e_run():
                                ['--config', c])
         assert result.exit_code == 0
 
+        o = convert_cfg_to_output_path(c)
+        assert result.output == open(o).read()
+
         # Same thing with verbose
         result = runner.invoke(sqvid.console.run,
                                ['--config', c, '--verbose'])
         assert result.exit_code == 0
+
+        o = convert_cfg_to_output_path(c, is_verbose=True)
+        assert result.output == open(o).read()
 
 
 def test_e2e_run_with_fail():
@@ -281,7 +297,13 @@ def test_e2e_run_with_fail():
                                ['--config', c])
         assert result.exit_code == 1
 
+        o = convert_cfg_to_output_path(c)
+        assert result.output == open(o).read()
+
         # Same thing with verbose
         result = runner.invoke(sqvid.console.run,
                                ['--config', c, '--verbose'])
         assert result.exit_code == 1
+
+        o = convert_cfg_to_output_path(c, is_verbose=True)
+        assert result.output == open(o).read()

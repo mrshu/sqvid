@@ -1,0 +1,24 @@
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID" 
+FROM suppliers GROUP BY suppliers."SupplierID" 
+HAVING count(suppliers."SupplierID") > 1
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE suppliers."SupplierID" < 3 OR suppliers."SupplierID" > 256
+===========
+FAILED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 3, 'max': 256})
+Offending 2 rows:
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+|  SupplierID  |  SupplierName                |  ContactName       |  Address         |  City         |  PostalCode  |  Country  |  Phone           |
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+|           1  |  Exotic Liquid               |  Charlotte Cooper  |  49 Gilbert St.  |  Londona      |  EC1 4SD     |  UK       |  (171) 555-2222  |
+|           2  |  New Orleans Cajun Delights  |  Shelley Burke     |  P.O. Box 78934  |  New Orleans  |  70117       |  USA      |  (100) 555-4822  |
++--------------+------------------------------+--------------------+------------------+---------------+--------------+-----------+------------------+
+

@@ -1,0 +1,2 @@
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 1, 'max': 256})
