@@ -39,6 +39,8 @@ def run(config, verbose):
                                              validator_fn, args,
                                              custom_column=custom_column)
 
+                col_names = val.get('report_columns', k)
+
                 if custom_column:
                     column = "{} (customized as '{}')".format(column,
                                                               custom_column)
@@ -63,7 +65,7 @@ def run(config, verbose):
                         '({})'.format(args) if args else '',
                     ))
                     print("Offending {} rows:".format(len(r)))
-                    print(NiceTable(list(map(tuple, r)), col_names=k))
+                    print(NiceTable(list(map(dict, r)), col_names=col_names))
                     n_failed += 1
 
     if n_failed > 0:

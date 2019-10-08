@@ -1,0 +1,24 @@
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID" 
+FROM suppliers GROUP BY suppliers."SupplierID" 
+HAVING count(suppliers."SupplierID") > 1
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE suppliers."SupplierID" < 3 OR suppliers."SupplierID" > 256
+===========
+FAILED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 3, 'max': 256})
+Offending 2 rows:
++--------------+------------------------------+
+|  SupplierID  |  SupplierName                |
++--------------+------------------------------+
+|           1  |  Exotic Liquid               |
+|           2  |  New Orleans Cajun Delights  |
++--------------+------------------------------+
+
