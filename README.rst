@@ -81,7 +81,7 @@ to, we can put together the following SQVID validation config:
    validator = 'in_range'
    args = {min = 1, max = 256}
 
-*Note that the the validation config file is fromated using* `TOML`_ *-- you
+*Note that the the validation config file is formated using* `TOML`_ *-- you
 can find a very nice tutorial on this formatting language at*
 `LearnXinYMinutes`_.
 
