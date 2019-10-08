@@ -48,7 +48,7 @@ def unique(table, column, args=None):
 
 def custom_sql(table, column, args=None):
     """
-    Execute a custom (optionally Jinja-fromatted) SQL query and fail if
+    Execute a custom (optionally Jinja-formatted) SQL query and fail if
     non-zero number of rows is returned.
     """
     j = JinjaSql(param_style='pyformat')
