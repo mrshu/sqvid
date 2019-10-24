@@ -25,6 +25,8 @@ jinjasql = "^0.1.7"
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
 pytest-cov = "^2.7"
+sphinx = "^2.2"
+sphinx-rtd-theme = "^0.4.3"
 
 [tool.poetry.scripts]
 sqvid = 'sqvid:console.run'

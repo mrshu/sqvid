@@ -7,8 +7,16 @@ def in_range(table, column, args=None):
     Check whether values in a column fall within a specific range.
 
     Args:
-        - min: the minimum value of the range
-        - max: the maximum value of the range
+        min (int): the minimum value of the range
+        max (int): the maximum value of the range
+
+    Example:
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.SupplierID]]
+        validator = 'in_range'
+        args = {min = 1, max = 256}
+
     """
     assert 'min' in args
     assert 'max' in args
@@ -22,7 +30,32 @@ def accepted_values(table, column, args=None):
     Check that a column contains only specified values.
 
     Args:
-        - vals: a list of values
+        vals (list): a list of values
+
+    Example:
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.Country]]
+        validator = 'accepted_values'
+        args.vals  = [
+          'USA',
+          'UK',
+          'Spain',
+          'Japan',
+          'Germany',
+          'Australia',
+          'Sweden',
+          'Finland',
+          'Italy',
+          'Brazil',
+          'Singapore',
+          'Norway',
+          'Canada',
+          'France',
+          'Denmark',
+          'Netherlands'
+        ]
+
 
     """
     assert 'vals' in args
@@ -32,7 +65,13 @@ def accepted_values(table, column, args=None):
 
 def not_null(table, column, args=None):
     """
-    Check that a column contains only non-NULL values.
+    Check that a column contains only non-`NULL` values.
+
+    Example:
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.SupplierID]]
+        validator = 'not_null'
     """
     return db.select([table]).where(column.is_(None))
 
@@ -40,6 +79,12 @@ def not_null(table, column, args=None):
 def unique(table, column, args=None):
     """
     Check whether values in a column are unique.
+
+    Example:
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.SupplierID]]
+        validator = 'unique'
     """
     return db.select([column]) \
         .select_from(table) \
@@ -51,6 +96,23 @@ def custom_sql(table, column, args=None):
     """
     Execute a custom (optionally Jinja-formatted) SQL query and fail if
     non-zero number of rows is returned.
+
+    Either ``query`` or ``query_file`` parameter needs to be provided. All the
+    other arguments are passed as Jinja variables and can be used to build the
+    query.
+
+    Args:
+        query (str): query to be executed (optional).
+        query_file (str): path to the file in which the query to be executed
+                          can be found (optional)
+
+    Example:
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.SupplierID]]
+        validator = 'custom_sql'
+        args.query_file = './tests/queries/tables_equal_rows.sql'
+        args.other_table = 'suppliers_copy'
     """
     j = JinjaSql(param_style='pyformat')
 
