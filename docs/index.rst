@@ -6,6 +6,23 @@
 Welcome to SQVID's documentation!
 =================================
 
+.. image:: https://img.shields.io/pypi/v/sqvid.svg
+    :target: https://pypi.python.org/pypi/sqvid
+    :alt: PyPI Status
+
+.. image:: https://img.shields.io/travis/mrshu/sqvid.svg
+    :target: https://travis-ci.org/mrshu/sqvid
+    :alt: Build Status
+
+.. image:: https://coveralls.io/repos/github/mrshu/sqvid/badge.svg?branch=master
+    :target: https://coveralls.io/github/mrshu/sqvid?branch=master
+    :alt: Code coverage Status
+
+.. image:: https://img.shields.io/pypi/l/sqvid.svg
+   :target: ./LICENSE
+   :alt: License Status
+
+
 SQVID, the **Simple sQl Validator of varIous Datasources** is a framework
 for validating any type of data source that can be queried via SQL with
 `SQLAlchemy`_.

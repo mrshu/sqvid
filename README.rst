@@ -17,6 +17,10 @@ SQVID
    :target: ./LICENSE
    :alt: License Status
 
+.. image:: https://readthedocs.org/projects/sqvid/badge/?version=latest
+   :target: https://sqvid.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+
 
 SQVID, the Simple sQl Validator of varIous Datasources is a framework for
 validating any type of data source that can be queried via SQL with the
@@ -29,6 +33,8 @@ CSVs and spreadsheets to massive databases.
 
 You can easily use SQVID to serve as a "sanity check" of your processing
 pipeline or as a testing framework for your various ETL processes.
+
+Found out more about it in the `documentation`_.
 
 Installation
 ------------
@@ -207,3 +213,4 @@ limitations under the License.
 .. _dataform: https://dataform.co/
 .. _TOML: https://github.com/toml-lang/toml
 .. _LearnXinYMinutes:  https://learnxinyminutes.com/docs/toml/
+.. _documentation:  https://sqvid.readthedocs.io/
