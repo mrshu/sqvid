@@ -2,3 +2,5 @@ PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of unique
 PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of in_range({'min': 1, 'max': 256})
 PASSED: Validation on [test_sqvid_db] suppliers.SupplierID of custom_sql({'query_file': './tests/queries/tables_equal_rows.sql', 'other_table': 'suppliers_copy', 'table': 'suppliers', 'column': 'SupplierID'})
 PASSED: Validation on [test_sqvid_db] suppliers.SupplierID (customized as 'SupplierID * 5') of in_range({'min': 1, 'max': 256})
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID (customized as 'SupplierID || '-' || SupplierName') of unique
+PASSED: Validation on [test_sqvid_db] suppliers.Country of accepted_values({'vals': ['USA', 'UK', 'Spain', 'Japan', 'Germany', 'Australia', 'Sweden', 'Finland', 'Italy', 'Brazil', 'Singapore', 'Norway', 'Canada', 'France', 'Denmark', 'Netherlands']})

@@ -43,3 +43,19 @@ FROM suppliers
 WHERE SupplierID * 5 < 1 OR SupplierID * 5 > 256
 ===========
 PASSED: Validation on [test_sqvid_db] suppliers.SupplierID (customized as 'SupplierID * 5') of in_range({'min': 1, 'max': 256})
+
+RUNNING QUERY:
+===========
+SELECT SupplierID || '-' || SupplierName 
+FROM suppliers GROUP BY SupplierID || '-' || SupplierName 
+HAVING count(SupplierID || '-' || SupplierName) > 1
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.SupplierID (customized as 'SupplierID || '-' || SupplierName') of unique
+
+RUNNING QUERY:
+===========
+SELECT suppliers."SupplierID", suppliers."SupplierName", suppliers."ContactName", suppliers."Address", suppliers."City", suppliers."PostalCode", suppliers."Country", suppliers."Phone" 
+FROM suppliers 
+WHERE suppliers."Country" NOT IN ('USA', 'UK', 'Spain', 'Japan', 'Germany', 'Australia', 'Sweden', 'Finland', 'Italy', 'Brazil', 'Singapore', 'Norway', 'Canada', 'France', 'Denmark', 'Netherlands')
+===========
+PASSED: Validation on [test_sqvid_db] suppliers.Country of accepted_values({'vals': ['USA', 'UK', 'Spain', 'Japan', 'Germany', 'Australia', 'Sweden', 'Finland', 'Italy', 'Brazil', 'Singapore', 'Norway', 'Canada', 'France', 'Denmark', 'Netherlands']})

@@ -11,13 +11,35 @@ args = {min = 1, max = 256}
 
 [[test_sqvid_db.suppliers.SupplierID]]
 validator = 'custom_sql'
-
-  [test_sqvid_db.suppliers.SupplierID.args]
-  query_file = './tests/queries/tables_equal_rows.sql'
-  other_table = 'suppliers_copy'
-
+args.query_file = './tests/queries/tables_equal_rows.sql'
+args.other_table = 'suppliers_copy'
 
 [[test_sqvid_db.suppliers.SupplierID]]
 validator = 'in_range'
 custom_column = 'SupplierID * 5'
 args = {min = 1, max = 256}
+
+[[test_sqvid_db.suppliers.SupplierID]]
+validator = 'unique'
+custom_column = "SupplierID || '-' || SupplierName"
+
+[[test_sqvid_db.suppliers.Country]]
+validator = 'accepted_values'
+args.vals  = [
+  'USA',
+  'UK',
+  'Spain',
+  'Japan',
+  'Germany',
+  'Australia',
+  'Sweden',
+  'Finland',
+  'Italy',
+  'Brazil',
+  'Singapore',
+  'Norway',
+  'Canada',
+  'France',
+  'Denmark',
+  'Netherlands'
+]

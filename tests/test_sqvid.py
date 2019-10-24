@@ -295,7 +295,7 @@ def test_e2e_run_with_fail():
     for c in config_files:
         result = runner.invoke(sqvid.console.run,
                                ['--config', c])
-        assert result.exit_code != 0
+        assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c)
         assert result.output == open(o).read()
@@ -303,7 +303,7 @@ def test_e2e_run_with_fail():
         # Same thing with verbose
         result = runner.invoke(sqvid.console.run,
                                ['--config', c, '--verbose'])
-        assert result.exit_code != 0
+        assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c, is_verbose=True)
         assert result.output == open(o).read()
@@ -318,7 +318,7 @@ def test_e2e_run_report_columns():
     for c in config_files:
         result = runner.invoke(sqvid.console.run,
                                ['--config', c])
-        assert result.exit_code != 0
+        assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c)
         assert result.output == open(o).read()
@@ -326,7 +326,7 @@ def test_e2e_run_report_columns():
         # Same thing with verbose
         result = runner.invoke(sqvid.console.run,
                                ['--config', c, '--verbose'])
-        assert result.exit_code != 0
+        assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c, is_verbose=True)
         assert result.output == open(o).read()

@@ -41,9 +41,10 @@ def run(config, verbose):
 
                 col_names = val.get('report_columns', k)
 
+                col_name = column
                 if custom_column:
-                    column = "{} (customized as '{}')".format(column,
-                                                              custom_column)
+                    col_name = "{} (customized as '{}')".format(column,
+                                                                custom_column)
 
                 if verbose:
                     print(QUERY_VERBOSE_STR.format(q))
@@ -52,7 +53,7 @@ def run(config, verbose):
                     print("PASSED: Validation on [{}] {}.{} of {}{}".format(
                         db_name,
                         table,
-                        column,
+                        col_name,
                         validator_name,
                         '({})'.format(args) if args else ''
                     ))
@@ -60,7 +61,7 @@ def run(config, verbose):
                     print("FAILED: Validation on [{}] {}.{} of {}{}".format(
                         db_name,
                         table,
-                        column,
+                        col_name,
                         validator_name,
                         '({})'.format(args) if args else '',
                     ))
