@@ -1,7 +1,4 @@
-from envtoml import load
-import sqlalchemy as db
-from importlib import import_module
-from .executor import execute_validation
+from .executor import execute_validations
 from nicetable.nicetable import NiceTable
 import sys
 import click
@@ -18,56 +15,19 @@ QUERY_VERBOSE_STR = "\nRUNNING QUERY:\n===========\n{}\n==========="
               help='Turn on verbose output of SQL queries.')
 def run(config, verbose):
     """Validator of data that is queriable via SQL."""
-    cfg = load(config)
-
-    engine = db.create_engine(cfg['general']['sqla'])
-    db_name = cfg['general']['db_name']
-
-    validator_module = import_module('.validators', package='sqvid')
 
     n_failed = 0
+    for validation in execute_validations(config):
+        if verbose:
+            print(QUERY_VERBOSE_STR.format(validation['query']))
 
-    for table in cfg[db_name]:
-        for column in cfg[db_name][table]:
-            for val in cfg[db_name][table][column]:
-                validator_name = val['validator']
-                args = val.get('args')
-                custom_column = val.get('custom_column')
+        print(validation['output'])
 
-                validator_fn = getattr(validator_module, validator_name)
-                r, k, q = execute_validation(engine, table, column,
-                                             validator_fn, args,
-                                             custom_column=custom_column)
-
-                col_names = val.get('report_columns', k)
-
-                col_name = column
-                if custom_column:
-                    col_name = "{} (customized as '{}')".format(column,
-                                                                custom_column)
-
-                if verbose:
-                    print(QUERY_VERBOSE_STR.format(q))
-
-                if len(r) == 0:
-                    print("PASSED: Validation on [{}] {}.{} of {}{}".format(
-                        db_name,
-                        table,
-                        col_name,
-                        validator_name,
-                        '({})'.format(args) if args else ''
-                    ))
-                else:
-                    print("FAILED: Validation on [{}] {}.{} of {}{}".format(
-                        db_name,
-                        table,
-                        col_name,
-                        validator_name,
-                        '({})'.format(args) if args else '',
-                    ))
-                    print("Offending {} rows:".format(len(r)))
-                    print(NiceTable(list(map(dict, r)), col_names=col_names))
-                    n_failed += 1
+        if validation['result'] == 'failed':
+            n_failed += 1
+            print("Offending {} rows:".format(len(validation['rows'])))
+            print(NiceTable(validation['rows'],
+                            col_names=validation['col_names']))
 
     if n_failed > 0:
         sys.exit(1)
