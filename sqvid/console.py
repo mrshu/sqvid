@@ -25,6 +25,8 @@ def run(config, verbose):
 
         if validation['result'] == 'failed':
             n_failed += 1
+
+        if validation['result'].startswith('failed'):
             print("Offending {} rows:".format(len(validation['rows'])))
             print(NiceTable(validation['rows'],
                             col_names=validation['col_names']))

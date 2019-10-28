@@ -44,6 +44,7 @@ def execute_validations(config):
                 validator_name = val['validator']
                 args = val.get('args')
                 custom_column = val.get('custom_column')
+                severity = val.get('severity', 'error')
 
                 validator_fn = getattr(validator_module, validator_name)
                 r, k, q = execute_validation(engine, table, column,
@@ -61,7 +62,8 @@ def execute_validations(config):
                 result = 'passed'
                 if len(r) == 0:
                     result = 'passed'
-                    out = "PASSED: Validation on [{}] {}.{} of {}{}".format(
+                    out = "{}: Validation on [{}] {}.{} of {}{}".format(
+                        result.upper(),
                         db_name,
                         table,
                         col_name,
@@ -69,8 +71,13 @@ def execute_validations(config):
                         '({})'.format(args) if args else ''
                     )
                 else:
-                    result = 'failed'
-                    out = "FAILED: Validation on [{}] {}.{} of {}{}".format(
+                    if severity == 'error':
+                        result = 'failed'
+                    elif severity == 'warn':
+                        result = 'failed (warn only)'
+
+                    out = "{}: Validation on [{}] {}.{} of {}{}".format(
+                        result.upper(),
                         db_name,
                         table,
                         col_name,

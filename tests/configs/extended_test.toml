@@ -43,3 +43,9 @@ args.vals  = [
   'Denmark',
   'Netherlands'
 ]
+
+[[test_sqvid_db.suppliers.SupplierID]]
+validator = 'in_range'
+severity = 'warn'
+custom_column = 'SupplierID * 30'
+args = {min = 1, max = 256}

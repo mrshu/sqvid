@@ -130,6 +130,12 @@ This can be done using he following set of parameters:
       validator = 'unique'
       custom_column = "SupplierID || '-' || SupplierName"
 
+``severity``
+    A "severity" of a validation defines what happens when it fails. It can
+    be set to either ``error`` (the default) or ``warn``.  When set to
+    ``warn``, the validation will still report the results (i.e. which rows
+    did not meet the validation criteria) but the validation will otherwise
+    behave as if it passed.
 
 .. _Database URL: https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls
 .. _TOML tables: https://github.com/toml-lang/toml#user-content-table
