@@ -71,10 +71,10 @@ def execute_validations(config):
                         '({})'.format(args) if args else ''
                     )
                 else:
-                    if severity == 'error':
-                        result = 'failed'
-                    elif severity == 'warn':
+                    if severity == 'warn':
                         result = 'failed (warn only)'
+                    else:
+                        result = 'failed'
 
                     out = "{}: Validation on [{}] {}.{} of {}{}".format(
                         result.upper(),
