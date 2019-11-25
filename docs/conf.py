@@ -1,7 +1,7 @@
 import sys
 import os
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, DIRNAME + '/../')
+sys.path.insert(0, os.path.abspath(DIRNAME + '/../'))
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full

@@ -2,6 +2,7 @@ import sqlalchemy as db
 from importlib import import_module
 import envtoml
 
+
 def prepare_table(engine, table_name):
     metadata = db.MetaData()
     return db.Table(table_name, metadata, autoload=True, autoload_with=engine)
