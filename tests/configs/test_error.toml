@@ -1,0 +1,13 @@
+[general]
+sqla = "sqlite:///tests/test_sqvid_db.sqlite"
+db_name = 'test_sqvid_db'
+
+[[test_sqvid_db.suppliers.SupplierIDs]]
+validator = 'unique'
+
+[[test_sqvid_db.suppliers.SupplierIDs]]
+validator = 'in_range'
+args = {min = 1, max = 256}
+
+[[test_sqvid_db.non_existent_table.SupplierID]]
+validator = 'unique'

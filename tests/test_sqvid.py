@@ -289,7 +289,8 @@ def test_e2e_run_with_fail():
     runner = CliRunner()
     config_files = [
         './tests/configs/test_fail.toml',
-        './tests/configs/extended_test_fail.toml'
+        './tests/configs/extended_test_fail.toml',
+        './tests/configs/test_error.toml'
     ]
 
     for c in config_files:

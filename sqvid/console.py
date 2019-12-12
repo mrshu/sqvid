@@ -23,7 +23,7 @@ def run(config, verbose):
 
         print(validation['output'])
 
-        if validation['result'] == 'failed':
+        if validation['result'] in ['failed', 'error']:
             n_failed += 1
 
         if validation['result'].startswith('failed'):

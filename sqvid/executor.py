@@ -47,44 +47,51 @@ def execute_validations(config):
                 custom_column = val.get('custom_column')
                 severity = val.get('severity', 'error')
 
-                validator_fn = getattr(validator_module, validator_name)
-                r, k, q = execute_validation(engine, table, column,
-                                             validator_fn, args,
-                                             custom_column=custom_column)
-
-                col_names = val.get('report_columns', k)
-
                 col_name = column
                 if custom_column:
                     col_name = "{} (customized as '{}')".format(column,
                                                                 custom_column)
+                result = None
+                further_info = ''
 
-                out = ''
-                result = 'passed'
-                if len(r) == 0:
-                    result = 'passed'
-                    out = "{}: Validation on [{}] {}.{} of {}{}".format(
-                        result.upper(),
-                        db_name,
-                        table,
-                        col_name,
-                        validator_name,
-                        '({})'.format(args) if args else ''
-                    )
-                else:
-                    if severity == 'warn':
+                validator_fn = getattr(validator_module, validator_name)
+                try:
+                    r, k, q = execute_validation(engine, table, column,
+                                                 validator_fn, args,
+                                                 custom_column=custom_column)
+                except KeyError as e:
+                    further_info = " - {} could not be found".format(e)
+                except Exception as e:
+                    further_info = " - {}: {}".format(e.__class__.__name__, e)
+
+                if further_info:
+                    # since the validation errored out there are no columns to
+                    # be reported and the query is also not really relevant
+                    k = []
+                    r = []
+                    q = '-- ERROR --'
+
+                    result = 'error'
+
+                col_names = val.get('report_columns', k)
+
+                if not result:
+                    if len(r) == 0:
+                        result = 'passed'
+                    elif severity == 'warn':
                         result = 'failed (warn only)'
                     else:
                         result = 'failed'
 
-                    out = "{}: Validation on [{}] {}.{} of {}{}".format(
-                        result.upper(),
-                        db_name,
-                        table,
-                        col_name,
-                        validator_name,
-                        '({})'.format(args) if args else '',
-                    )
+                out = "{}: Validation on [{}] {}.{} of {}{}{}".format(
+                    result.upper(),
+                    db_name,
+                    table,
+                    col_name,
+                    validator_name,
+                    '({})'.format(args) if args else '',
+                    further_info
+                )
 
                 yield {
                     'query': q,

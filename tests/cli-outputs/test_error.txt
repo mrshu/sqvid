@@ -1,0 +1,3 @@
+ERROR: Validation on [test_sqvid_db] suppliers.SupplierIDs of unique - 'SupplierIDs' could not be found
+ERROR: Validation on [test_sqvid_db] suppliers.SupplierIDs of in_range({'min': 1, 'max': 256}) - 'SupplierIDs' could not be found
+ERROR: Validation on [test_sqvid_db] non_existent_table.SupplierID of unique - NoSuchTableError: non_existent_table
