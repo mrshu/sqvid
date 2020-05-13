@@ -9,7 +9,7 @@ def prepare_table(engine, table_name):
 
 
 def execute_validation(engine, table, column, validator, args=None,
-                       custom_column=None):
+                       custom_column=None, limit=None):
     conn = engine.connect()
     t = prepare_table(engine, table)
     col = t.columns[column]
@@ -20,6 +20,10 @@ def execute_validation(engine, table, column, validator, args=None,
         col = db.sql.literal_column(custom_column)
 
     s = validator(t, col, args=args)
+
+    if limit:
+        s = s.limit(limit)
+
     ex = conn.execute(s)
 
     if type(s) == str:
@@ -31,11 +35,20 @@ def execute_validation(engine, table, column, validator, args=None,
     return ex.fetchall(), ex.keys(), bare_query
 
 
-def execute_validations(config):
+def execute_validations(config, table=None):
     cfg = envtoml.load(config)
 
     engine = db.create_engine(cfg['general']['sqla'])
     db_name = cfg['general']['db_name']
+    limit = cfg['general'].get('limit', None)
+
+    if table:
+        if table in cfg[db_name]:
+            cfg_table = cfg[db_name][table]
+            cfg[db_name] = {}
+            cfg[db_name][table] = cfg_table
+        else:
+            raise Exception(f'Table {table} is missing in config ({config}).')
 
     validator_module = import_module('.validators', package='sqvid')
 
@@ -58,7 +71,8 @@ def execute_validations(config):
                 try:
                     r, k, q = execute_validation(engine, table, column,
                                                  validator_fn, args,
-                                                 custom_column=custom_column)
+                                                 custom_column=custom_column,
+                                                 limit=limit)
                 except KeyError as e:
                     further_info = " - {} could not be found".format(e)
                 except Exception as e:

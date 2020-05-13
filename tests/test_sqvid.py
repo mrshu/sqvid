@@ -294,16 +294,14 @@ def test_e2e_run_with_fail():
     ]
 
     for c in config_files:
-        result = runner.invoke(sqvid.console.run,
-                               ['--config', c])
+        result = runner.invoke(sqvid.console.run, ['--config', c])
         assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c)
         assert result.output == open(o).read()
 
         # Same thing with verbose
-        result = runner.invoke(sqvid.console.run,
-                               ['--config', c, '--verbose'])
+        result = runner.invoke(sqvid.console.run, ['--config', c, '--verbose'])
         assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c, is_verbose=True)
@@ -317,8 +315,8 @@ def test_e2e_run_report_columns():
     ]
 
     for c in config_files:
-        result = runner.invoke(sqvid.console.run,
-                               ['--config', c])
+        result = runner.invoke(sqvid.console.run, ['--config', c])
+
         assert result.exit_code == 1
 
         o = convert_cfg_to_output_path(c)
@@ -331,3 +329,34 @@ def test_e2e_run_report_columns():
 
         o = convert_cfg_to_output_path(c, is_verbose=True)
         assert result.output == open(o).read()
+
+
+def test_limit_option():
+    config_files = [
+        './tests/configs/test_limit.toml'
+    ]
+
+    for result in sqvid.executor.execute_validations(
+            config=config_files,
+            table='suppliers'
+    ):
+        assert len(result['rows']) == 2
+
+
+def test_table_option():
+    config_files = [
+        './tests/configs/test.toml'
+    ]
+
+    with pytest.raises(Exception, match=r"Table .* is missing in config .*"):
+        for result in sqvid.executor.execute_validations(
+                config=config_files,
+                table='no-table'
+        ):
+            result
+
+    for result in sqvid.executor.execute_validations(
+            config=config_files,
+            table='suppliers'
+    ):
+        assert result['result'] == 'passed'
