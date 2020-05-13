@@ -8,8 +8,8 @@ def prepare_table(engine, table_name):
     return db.Table(table_name, metadata, autoload=True, autoload_with=engine)
 
 
-def execute_validation(engine, table, column, limit, validator, args=None,
-                       custom_column=None):
+def execute_validation(engine, table, column, validator, args=None,
+                       custom_column=None, limit=None):
     conn = engine.connect()
     t = prepare_table(engine, table)
     col = t.columns[column]
@@ -20,7 +20,9 @@ def execute_validation(engine, table, column, limit, validator, args=None,
         col = db.sql.literal_column(custom_column)
 
     s = validator(t, col, args=args)
-    s = s.limit(limit)
+
+    if limit:
+        s = s.limit(limit)
 
     ex = conn.execute(s)
 
@@ -38,12 +40,15 @@ def execute_validations(config, table=None):
 
     engine = db.create_engine(cfg['general']['sqla'])
     db_name = cfg['general']['db_name']
-    limit = cfg['general'].get('limit', 50)
+    limit = cfg['general'].get('limit', None)
 
     if table:
-        cfg_table = cfg[db_name][table]
-        cfg[db_name] = {}
-        cfg[db_name][table] = cfg_table
+        if table in cfg[db_name]:
+            cfg_table = cfg[db_name][table]
+            cfg[db_name] = {}
+            cfg[db_name][table] = cfg_table
+        else:
+            raise Exception(f'Table {table} is missing in config ({config}).')
 
     validator_module = import_module('.validators', package='sqvid')
 
@@ -64,9 +69,10 @@ def execute_validations(config, table=None):
 
                 validator_fn = getattr(validator_module, validator_name)
                 try:
-                    r, k, q = execute_validation(engine, table, column, limit,
+                    r, k, q = execute_validation(engine, table, column,
                                                  validator_fn, args,
-                                                 custom_column=custom_column)
+                                                 custom_column=custom_column,
+                                                 limit=limit)
                 except KeyError as e:
                     further_info = " - {} could not be found".format(e)
                 except Exception as e:
