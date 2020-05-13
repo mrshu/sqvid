@@ -8,7 +8,7 @@ def prepare_table(engine, table_name):
     return db.Table(table_name, metadata, autoload=True, autoload_with=engine)
 
 
-def execute_validation(engine, table, column, validator, args=None,
+def execute_validation(engine, table, column, limit, validator, args=None,
                        custom_column=None):
     conn = engine.connect()
     t = prepare_table(engine, table)
@@ -20,6 +20,8 @@ def execute_validation(engine, table, column, validator, args=None,
         col = db.sql.literal_column(custom_column)
 
     s = validator(t, col, args=args)
+    s = s.limit(limit)
+
     ex = conn.execute(s)
 
     if type(s) == str:
@@ -31,11 +33,17 @@ def execute_validation(engine, table, column, validator, args=None,
     return ex.fetchall(), ex.keys(), bare_query
 
 
-def execute_validations(config):
+def execute_validations(config, table=None):
     cfg = envtoml.load(config)
 
     engine = db.create_engine(cfg['general']['sqla'])
     db_name = cfg['general']['db_name']
+    limit = cfg['general'].get('limit', 50)
+
+    if table:
+        cfg_table = cfg[db_name][table]
+        cfg[db_name] = {}
+        cfg[db_name][table] = cfg_table
 
     validator_module = import_module('.validators', package='sqvid')
 
@@ -56,7 +64,7 @@ def execute_validations(config):
 
                 validator_fn = getattr(validator_module, validator_name)
                 try:
-                    r, k, q = execute_validation(engine, table, column,
+                    r, k, q = execute_validation(engine, table, column, limit,
                                                  validator_fn, args,
                                                  custom_column=custom_column)
                 except KeyError as e:
