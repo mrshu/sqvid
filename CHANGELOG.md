@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.8] - 2020-05-13
+### Added
+- add: Parameter to limit number of returned rows on fail
+- add: Ability to execute validations for a specific table
+
 ## [v0.1.7] - 2019-12-12
 ### Added
 - add: handling errors in validation defitions

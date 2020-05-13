@@ -338,7 +338,7 @@ def test_limit_option():
 
     for result in sqvid.executor.execute_validations(
             config=config_files,
-            table='suppliers'
+            specific_table='suppliers'
     ):
         assert len(result['rows']) == 2
 
@@ -351,12 +351,12 @@ def test_table_option():
     with pytest.raises(Exception, match=r"Table .* is missing in config .*"):
         for result in sqvid.executor.execute_validations(
                 config=config_files,
-                table='no-table'
+                specific_table='no-table'
         ):
             result
 
     for result in sqvid.executor.execute_validations(
             config=config_files,
-            table='suppliers'
+            specific_table='suppliers'
     ):
         assert result['result'] == 'passed'

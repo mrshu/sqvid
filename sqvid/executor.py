@@ -35,20 +35,21 @@ def execute_validation(engine, table, column, validator, args=None,
     return ex.fetchall(), ex.keys(), bare_query
 
 
-def execute_validations(config, table=None):
+def execute_validations(config, specific_table=None):
     cfg = envtoml.load(config)
 
     engine = db.create_engine(cfg['general']['sqla'])
     db_name = cfg['general']['db_name']
     limit = cfg['general'].get('limit', None)
 
-    if table:
-        if table in cfg[db_name]:
-            cfg_table = cfg[db_name][table]
+    if specific_table:
+        if specific_table in cfg[db_name]:
+            cfg_table = cfg[db_name][specific_table]
             cfg[db_name] = {}
-            cfg[db_name][table] = cfg_table
+            cfg[db_name][specific_table] = cfg_table
         else:
-            raise Exception(f'Table {table} is missing in config ({config}).')
+            raise Exception(f'Table {specific_table} is missing'
+                            f' in config ({config}).')
 
     validator_module = import_module('.validators', package='sqvid')
 

@@ -31,6 +31,22 @@ A sample ``[general]`` section may look as follows:
     the ``sqla`` parameter, having it specified separately allows us much
     greater flexibility when generating validations.
 
+``limit``
+    By default, ``sqvid`` will report all rows that did not conform to a
+    specific validation. This may not be desirable in all cases (i.e. when
+    the expected amount of non-conforming rows is large)
+
+    The limit be specified on per validation config basis using the
+    ``limit`` parameter, such as in the following:
+
+    .. code:: toml
+    
+      [general]
+      sqla = "sqlite:///test_sqvid_db.sqlite"
+      db_name = 'test_sqvid_db'
+      limit = 50
+
+
 
 Definition of validations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -229,7 +245,6 @@ This can be done using he following set of parameters:
       |           1  |  Exotic Liquid               |
       |           2  |  New Orleans Cajun Delights  |
       +--------------+------------------------------+
-
 
 
 .. _Database URL: https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls
