@@ -1,6 +1,8 @@
 from sqvid import __version__
 import sqlalchemy as db
 import sqvid
+from sqvid.executor import (execute_validation, execute_validations,
+                            prepare_table)
 import pytest
 import sqlite3
 import os
@@ -29,7 +31,7 @@ def test_version():
 
 def test_raw_in_range_validation(engine):
     conn = engine.connect()
-    t = sqvid.executor.prepare_table(engine, 'suppliers')
+    t = prepare_table(engine, 'suppliers')
     s = sqvid.validators.in_range(t, t.columns['SupplierID'],
                                   args={
                                       'min': 1,
@@ -40,26 +42,26 @@ def test_raw_in_range_validation(engine):
 
 
 def test_execute_in_range_validation(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.in_range,
-                                                args={
-                                                    'min': 1,
-                                                    'max': 30
-                                                })
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.in_range,
+                                 args={
+                                     'min': 1,
+                                     'max': 30
+                                 })
     assert len(r) == 0
 
 
 def test_execute_in_range_validation_with_fail(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.in_range,
-                                                args={
-                                                    'min': 3,
-                                                    'max': 30
-                                                })
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.in_range,
+                                 args={
+                                     'min': 3,
+                                     'max': 30
+                                 })
     assert len(r) == 2
 
     o = [(1, 'Exotic Liquid', 'Charlotte Cooper',
@@ -72,54 +74,54 @@ def test_execute_in_range_validation_with_fail(engine):
 
 def test_execute_in_range_validation_custom_column(engine):
     c = 'SupplierID - 5'
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.in_range,
-                                                args={
-                                                    'min': 1,
-                                                    'max': 30
-                                                },
-                                                custom_column=c)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.in_range,
+                                 args={
+                                     'min': 1,
+                                     'max': 30
+                                 },
+                                 custom_column=c)
     assert len(r) == 5
 
 
 def test_execute_in_range_validation_custom_column_with_fail(engine):
     c = 'SupplierID * 5'
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.in_range,
-                                                args={
-                                                    'min': 1,
-                                                    'max': 30
-                                                },
-                                                custom_column=c)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.in_range,
+                                 args={
+                                     'min': 1,
+                                     'max': 30
+                                 },
+                                 custom_column=c)
     assert len(r) == 23
 
 
 def test_execute_not_null_validation(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'products',
-                                                'ProductID',
-                                                sqvid.validators.not_null)
+    r, _, _ = execute_validation(engine,
+                                 'products',
+                                 'ProductID',
+                                 sqvid.validators.not_null)
     assert len(r) == 0
 
 
 def test_execute_not_null_validation_with_fail(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'products',
-                                                'Price',
-                                                sqvid.validators.not_null)
+    r, _, _ = execute_validation(engine,
+                                 'products',
+                                 'Price',
+                                 sqvid.validators.not_null)
     assert len(r) == 1
     assert r == [(78, 'Chocolade', 22, 3, '100 pkgs.', None)]
 
 
 def test_execute_unique_validation(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.unique)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.unique)
     assert len(r) == 0
 
 
@@ -142,13 +144,13 @@ def test_execute_accepted_values_validation(engine):
         'Denmark',
         'Netherlands'
     ]
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'Country',
-                                                sqvid.validators.accepted_values, # noqa
-                                                args={
-                                                    'vals': accepted_values
-                                                })
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'Country',
+                                 sqvid.validators.accepted_values, # noqa
+                                 args={
+                                     'vals': accepted_values
+                                 })
 
     assert len(r) == 0
 
@@ -172,13 +174,13 @@ def test_execute_accepted_values_validation_fail(engine):
         'Denmark',
         'Netherlands'
     ]
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers_missing_first_3_append_last_3', # noqa
-                                                'Country',
-                                                sqvid.validators.accepted_values, # noqa
-                                                args={
-                                                    'vals': accepted_values
-                                                })
+    r, _, _ = execute_validation(engine,
+                                 'suppliers_missing_first_3_append_last_3', # noqa
+                                 'Country',
+                                 sqvid.validators.accepted_values, # noqa
+                                 args={
+                                     'vals': accepted_values
+                                 })
 
     assert len(r) == 3
     assert r == [
@@ -192,10 +194,10 @@ def test_execute_accepted_values_validation_fail(engine):
 
 
 def test_execute_unique_validation_with_fail(engine):
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'orders',
-                                                'CustomerID',
-                                                sqvid.validators.unique)
+    r, _, _ = execute_validation(engine,
+                                 'orders',
+                                 'CustomerID',
+                                 sqvid.validators.unique)
     assert len(r) == 52
 
 
@@ -204,11 +206,11 @@ def test_execute_custom_sql_query_validation(engine):
         'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }}',
         'val': 50
     }
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.custom_sql,
-                                                args=args)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.custom_sql,
+                                 args=args)
     assert len(r) == 0
 
 
@@ -217,11 +219,11 @@ def test_execute_custom_sql_query_validation_fail(engine):
         'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }}',
         'val': 25
     }
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.custom_sql,
-                                                args=args)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.custom_sql,
+                                 args=args)
     assert len(r) == 4
 
 
@@ -230,11 +232,11 @@ def test_execute_custom_sql_file_validation_fail(engine):
         'query_file': './tests/queries/tables_equal_rows.sql',
         'other_table': 'suppliers_missing_first_3'
     }
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.custom_sql,
-                                                args=args)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.custom_sql,
+                                 args=args)
     assert len(r) == 3
 
 
@@ -243,11 +245,11 @@ def test_execute_custom_sql_file_validation_fail_again(engine):
         'query_file': './tests/queries/tables_equal_rows.sql',
         'other_table': 'suppliers_missing_first_3_append_last_3'
     }
-    r, _, _ = sqvid.executor.execute_validation(engine,
-                                                'suppliers',
-                                                'SupplierID',
-                                                sqvid.validators.custom_sql,
-                                                args=args)
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.custom_sql,
+                                 args=args)
     assert len(r) == 6
 
 
@@ -336,7 +338,7 @@ def test_limit_option():
         './tests/configs/test_limit.toml'
     ]
 
-    for result in sqvid.executor.execute_validations(
+    for result in execute_validations(
             config=config_files,
             specific_table='suppliers'
     ):
@@ -349,14 +351,48 @@ def test_table_option():
     ]
 
     with pytest.raises(Exception, match=r"Table .* is missing in config .*"):
-        for result in sqvid.executor.execute_validations(
+        for result in execute_validations(
                 config=config_files,
                 specific_table='no-table'
         ):
             result
 
-    for result in sqvid.executor.execute_validations(
+    for result in execute_validations(
             config=config_files,
             specific_table='suppliers'
     ):
         assert result['result'] == 'passed'
+
+
+@pytest.fixture
+def execute_validation_mock(mocker):
+    return mocker.patch('sqvid.executor.execute_validation')
+
+
+@pytest.fixture
+def envtoml_load_mock(mocker):
+    return mocker.patch('envtoml.load', return_value={
+            'general': {
+                'limit': 10,
+                'db_name': 'test',
+                'sqla': 'sqlite:///test.db'
+            },
+            'test': {
+                'table': {
+                    'some_column': [{
+                        'validator': 'unique',
+                        'limit': 5
+                    }]
+                }
+            }
+        })
+
+
+def test_custom_limit(mocker, execute_validation_mock, envtoml_load_mock):
+    list(execute_validations('dummy.cfg'))
+
+    envtoml_load_mock.assert_called_with('dummy.cfg')
+
+    execute_validation_mock.assert_called_with(mocker.ANY, 'table',
+                                               'some_column', mocker.ANY, None,
+                                               custom_column=None, limit=5)

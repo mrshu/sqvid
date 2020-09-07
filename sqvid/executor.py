@@ -60,6 +60,9 @@ def execute_validations(config, specific_table=None):
                 args = val.get('args')
                 custom_column = val.get('custom_column')
                 severity = val.get('severity', 'error')
+                # default to the global limit but allow a validation to set a
+                # custom one
+                limit = val.get('limit', limit)
 
                 col_name = column
                 if custom_column:
