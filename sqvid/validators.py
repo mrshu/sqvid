@@ -126,4 +126,14 @@ def custom_sql(table, column, args=None):
 
     query, bind_params = j.prepare_query(q_str, args)
 
-    return query % bind_params
+    binded_query = query % bind_params
+
+    # Ensure custom_sql query does not end with a semicolon, so that things
+    # like LIMIT can be appended to it.
+    q = binded_query.strip()
+    if q.endswith(';'):
+        context = q[10:]
+        raise ValueError(f'Custom SQL query for [{table.name}.{column.name}]'
+                         f" cannot end with a semicolon: ...'{context}'")
+
+    return binded_query
