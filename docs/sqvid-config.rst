@@ -36,7 +36,7 @@ A sample ``[general]`` section may look as follows:
     specific validation. This may not be desirable in all cases (i.e. when
     the expected amount of non-conforming rows is large)
 
-    The limit be specified on per validation config basis using the
+    The limit can be specified on per validation config basis using the
     ``limit`` parameter, such as in the following:
 
     .. code:: toml
@@ -246,6 +246,43 @@ This can be done using he following set of parameters:
       |           2  |  New Orleans Cajun Delights  |
       +--------------+------------------------------+
 
+``limit``
+    The limit of rows to report can also be specified per particular
+    validation. This value defaults to the ``limit`` set on the validation
+    config level.
+
+    For instance
+    
+    .. code:: toml
+
+      [[test_sqvid_db.suppliers.SupplierID]]
+      validator = 'in_range'
+      report_columns = [
+        'SupplierID',
+        'SupplierName'
+      ]
+      args = {min = 3, max = 256}
+      limit = 1
+
+
+    would report only a single offending row.
+
+    This configuration option also allows one to selectively turn off the
+    ``limit`` set on the validation config level. For instance
+
+    .. code:: toml
+
+      [[test_sqvid_db.suppliers.SupplierID]]
+      validator = 'in_range'
+      report_columns = [
+        'SupplierID',
+        'SupplierName'
+      ]
+      args = {min = 3, max = 256}
+      limit = false
+
+    would report all offending rows, regardless of what the setting of
+    ``limit`` in the ``general`` section was.
 
 .. _Database URL: https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls
 .. _TOML tables: https://github.com/toml-lang/toml#user-content-table

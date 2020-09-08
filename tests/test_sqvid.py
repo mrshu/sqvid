@@ -374,6 +374,18 @@ def test_limit_option():
         assert len(result['rows']) == 2
 
 
+def test_limit_turned_off():
+    config_files = [
+        './tests/configs/test_limit_turned_off.toml'
+    ]
+
+    for result in execute_validations(
+            config=config_files,
+            specific_table='suppliers'
+    ):
+        assert len(result['rows']) == 9
+
+
 def test_table_option():
     config_files = [
         './tests/configs/test.toml'
@@ -425,4 +437,3 @@ def test_custom_limit(mocker, execute_validation_mock, envtoml_load_mock):
     execute_validation_mock.assert_called_with(mocker.ANY, 'table',
                                                'some_column', mocker.ANY, None,
                                                custom_column=None, limit=5)
-
