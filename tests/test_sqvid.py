@@ -227,6 +227,35 @@ def test_execute_custom_sql_query_validation_fail(engine):
     assert len(r) == 4
 
 
+def test_custom_sql_limit(engine):
+    args = {
+        'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }}',
+        'val': 25
+    }
+    r, _, _ = execute_validation(engine,
+                                 'suppliers',
+                                 'SupplierID',
+                                 sqvid.validators.custom_sql,
+                                 args=args,
+                                 limit=3)
+    assert len(r) == 3
+
+
+def test_custom_sql_with_semicolon_fail(engine):
+    args = {
+        'query': 'SELECT * FROM {{ table }} WHERE {{ column }} > {{ val }};',
+        'val': 25
+    }
+
+    ex_regex = r"Custom SQL query for .* cannot end with a semicolon: .*"
+    with pytest.raises(ValueError, match=ex_regex):
+        r, _, _ = execute_validation(engine,
+                                     'suppliers',
+                                     'SupplierID',
+                                     sqvid.validators.custom_sql,
+                                     args=args)
+
+
 def test_execute_custom_sql_file_validation_fail(engine):
     args = {
         'query_file': './tests/queries/tables_equal_rows.sql',
@@ -396,3 +425,4 @@ def test_custom_limit(mocker, execute_validation_mock, envtoml_load_mock):
     execute_validation_mock.assert_called_with(mocker.ANY, 'table',
                                                'some_column', mocker.ANY, None,
                                                custom_column=None, limit=5)
+

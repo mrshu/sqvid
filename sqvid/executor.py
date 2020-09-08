@@ -22,7 +22,10 @@ def execute_validation(engine, table, column, validator, args=None,
     s = validator(t, col, args=args)
 
     if limit:
-        s = s.limit(limit)
+        if type(s) == str:
+            s += f' LIMIT {limit}'
+        else:
+            s = s.limit(limit)
 
     ex = conn.execute(s)
 

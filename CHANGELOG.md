@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - add: Ability to set `limit` per validation
+- add: Implementation of `limit` for `custom_sql`
 
 ## [v0.1.8] - 2020-05-13
 ### Added
