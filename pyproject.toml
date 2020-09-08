@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sqvid"
-version = "0.1.8"
+version = "0.1.9"
 description = "SQVID: Simple sQl Validator of varIous Datasources"
 authors = ["Marek Suppa <mr@shu.io>"]
 license = "Apache-2.0"
