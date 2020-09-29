@@ -101,6 +101,9 @@ def custom_sql(table, column, args=None):
     other arguments are passed as Jinja variables and can be used to build the
     query.
 
+    The ``table`` and ``column`` the validator is called on are automaticaly
+    added to the list of Jinja variables.
+
     Args:
         query (str): query to be executed (optional).
         query_file (str): path to the file in which the query to be executed
@@ -113,6 +116,16 @@ def custom_sql(table, column, args=None):
         validator = 'custom_sql'
         args.query_file = './tests/queries/tables_equal_rows.sql'
         args.other_table = 'suppliers_copy'
+
+      .. code:: toml
+
+        [[test_sqvid_db.suppliers.SupplierID]]
+        validator = 'custom_sql'
+        args.query= 'SELECT * FROM {{ table }} WHERE {{ column }} > 20'
+
+        # The config above would execute the query
+        #   SELECT * FROM suppliers WHERE SupplierID > 20
+
     """
     j = JinjaSql(param_style='pyformat')
 
