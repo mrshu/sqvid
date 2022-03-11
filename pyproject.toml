@@ -19,7 +19,7 @@ python = "^3.6"
 sqlalchemy = "^1.3"
 envtoml = "^0.1.1"
 nicetable = "^0.7.0"
-click = "^7.0"
+click = "^8.0"
 jinjasql = "^0.1.7"
 
 [tool.poetry.dev-dependencies]
