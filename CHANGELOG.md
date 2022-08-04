@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.10 - 2022-08-04]
+- chore: Upgrade dependencies (jinjasql to support Jinja2==3.1.2)
+
 ## [v0.1.10 - 2022-03-11]
 ### Added
 - chore: Upgrade dependencies
